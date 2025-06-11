@@ -57,7 +57,7 @@ class TriggerListener:
                 max_results=10,
                 tweet_fields=['created_at', 'author_id', 'in_reply_to_user_id', 'conversation_id'],
                 expansions=['author_id', 'in_reply_to_user_id'],
-                start_time=self.last_check_time.isoformat()
+                start_time=self.last_check_time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
             )
             
             if not tweets.data:

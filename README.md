@@ -53,3 +53,106 @@ TWITTER_API_SECRET=your_api_secret
 TWITTER_ACCESS_TOKEN=your_access_token
 TWITTER_ACCESS_TOKEN_SECRET=your_access_token_secret
 TWITTER_BEARER_TOKEN=your_bearer_token
+```
+
+### 3. Installation and Running
+
+1. Install required dependencies:
+```bash
+pip install tweepy python-dotenv requests
+```
+
+2. Run the bot:
+```bash
+python main.py
+```
+
+The bot will start monitoring Twitter for the trigger phrase "riddle me this" and automatically analyze users when detected.
+
+## How It Works
+
+1. **Trigger Detection**: The bot continuously monitors Twitter replies for the exact phrase "riddle me this"
+2. **User Identification**: When found, it extracts the original tweet author's information
+3. **Trustworthiness Analysis**: Performs comprehensive analysis including:
+   - Account age (newer accounts score lower)
+   - Follower-to-following ratio (better ratios score higher)
+   - Bio quality (length and keyword analysis)
+   - Engagement metrics (likes, retweets, replies relative to followers)
+   - Content analysis (Solana relevance, suspicious patterns)
+   - Trust list verification (checks against GitHub trust list)
+4. **Response Generation**: Posts a detailed trust score summary as a reply
+
+## Trust Scoring
+
+The bot calculates a final trust score (0-100) based on weighted factors:
+- Account age: 15%
+- Follower ratio: 20%
+- Bio quality: 10%
+- Engagement: 25%
+- Content quality: 20%
+- Trust list connections: 10%
+
+## Configuration Options
+
+You can customize the bot's behavior by modifying these environment variables:
+
+- `MONITOR_SPECIFIC_ACCOUNT`: Set to `true` to only monitor replies to a specific account
+- `MONITOR_USERNAME`: Username to monitor (default: projectrugguard)
+- `CHECK_INTERVAL`: How often to check for triggers in seconds (default: 60)
+- `MAX_RECENT_TWEETS`: Number of recent tweets to analyze (default: 20)
+
+## Deployment on Replit
+
+This bot is designed to run seamlessly on Replit:
+
+1. Fork this repository to your Replit account
+2. Add your Twitter API credentials to Replit Secrets
+3. Run the project - it will automatically install dependencies and start monitoring
+
+## Rate Limiting
+
+The bot includes built-in rate limiting to respect Twitter API limits:
+- Automatic backoff when rate limits are hit
+- Configurable request frequency
+- Graceful error handling
+
+## Trust List Integration
+
+The bot automatically fetches and updates the trust list from:
+https://github.com/devsyrem/turst-list/blob/main/list
+
+Users with connections to trusted accounts receive higher trust scores.
+
+## Example Output
+
+When the bot detects a trigger, it posts a reply like:
+
+```
+RugGuard Analysis Complete 🛡️
+
+Trust Score: 72.5/100
+Status: 🟡 MODERATELY TRUSTED
+
+📊 Breakdown:
+• Account Age: 487 days
+• Followers: 1,234 | Following: 567
+• Bio Quality: ✓
+• Avg Engagement: 15.3
+• Trust List: ✗
+
+⚠️ Always DYOR before any transactions!
+#RugGuard #SolanaEcosystem
+```
+
+## Contributing
+
+This project follows a modular architecture for easy maintenance and extension. Each component has a specific responsibility:
+
+- Add new analysis metrics in `analyzer.py`
+- Modify trigger detection logic in `trigger_listener.py`
+- Update response formatting in `reply_bot.py`
+- Extend trust list functionality in `trust_check.py`
+
+## License
+
+This project is open source and available under the MIT License.
