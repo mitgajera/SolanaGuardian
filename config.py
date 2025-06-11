@@ -25,8 +25,8 @@ class Config:
         self.MONITOR_USERNAME = os.getenv('MONITOR_USERNAME', 'projectrugguard')
         
         # Rate Limiting
-        self.CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '60'))  # seconds
-        self.MAX_REQUESTS_PER_HOUR = int(os.getenv('MAX_REQUESTS_PER_HOUR', '100'))
+        self.CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '180'))  # seconds - increased to avoid rate limits
+        self.MAX_REQUESTS_PER_HOUR = int(os.getenv('MAX_REQUESTS_PER_HOUR', '50'))
         
         # Trust List Configuration
         self.TRUST_LIST_URL = os.getenv('TRUST_LIST_URL', 'https://raw.githubusercontent.com/devsyrem/turst-list/main/list')

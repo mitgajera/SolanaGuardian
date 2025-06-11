@@ -44,12 +44,11 @@ class TriggerListener:
             # Search for recent tweets containing the trigger phrase
             current_time = datetime.utcnow()
             
-            # Build search query - focus on replies only
-            query = f'"{self.trigger_phrase}" -is:retweet is:reply'
+            # Build search query - focus on replies only, more efficient
+            query = f'"{self.trigger_phrase}" -is:retweet is:reply -is:quote'
             
-            # If monitoring specific account, add it to query
-            if self.config.MONITOR_SPECIFIC_ACCOUNT:
-                query += f" to:{self.config.MONITOR_USERNAME}"
+            # Don't limit to specific account - monitor all "riddle me this" replies
+            # This ensures we catch all triggers regardless of who they're replying to
             
             # Search for tweets with better rate limit handling
             try:

@@ -187,8 +187,8 @@ Status: {trust_level}
                     print("⏳ No triggers found, continuing to monitor...")
                 
                 # Wait before next check (respecting rate limits)
-                print(f"💤 Waiting 60 seconds before next scan...")
-                time.sleep(60)  # Check every minute
+                print(f"💤 Waiting {self.config.CHECK_INTERVAL} seconds before next scan...")
+                time.sleep(self.config.CHECK_INTERVAL)
                 
         except KeyboardInterrupt:
             print("\n🛑 Bot stopped by user")
