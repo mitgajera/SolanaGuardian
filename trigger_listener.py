@@ -51,15 +51,19 @@ class TriggerListener:
             if self.config.MONITOR_SPECIFIC_ACCOUNT:
                 query += f" to:{self.config.MONITOR_USERNAME}"
             
-            # Search for tweets
+            # Search for tweets with better rate limit handling
             try:
                 tweets = self.client.search_recent_tweets(
                     query=query,
                     max_results=10,
-                    tweet_fields=['created_at', 'author_id', 'in_reply_to_user_id', 'conversation_id'],
+                    tweet_fields=['created_at', 'author_id', 'in_reply_to_user_id', 'conversation_id', 'text'],
                     expansions=['author_id', 'in_reply_to_user_id'],
                     start_time=self.last_check_time.strftime('%Y-%m-%dT%H:%M:%SZ')
                 )
+            except tweepy.TooManyRequests:
+                logger.warning("Rate limit hit - will retry in next cycle")
+                # Don't update last_check_time so we can retry these tweets
+                return triggers
             except Exception as e:
                 logger.error(f"Error searching tweets: {str(e)}")
                 self.last_check_time = current_time
