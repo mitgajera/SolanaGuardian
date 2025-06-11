@@ -109,6 +109,9 @@ class TriggerListener:
                         }
                         
                         triggers.append(trigger_data)
+                        print(f"🔔 TRIGGER FOUND!")
+                        print(f"   Tweet ID: {tweet.id}")
+                        print(f"   Original Author: @{original_author_username}")
                         logger.info(f"Found trigger: {tweet.id} -> analyzing user {original_author_id}")
                         
                 except Exception as e:

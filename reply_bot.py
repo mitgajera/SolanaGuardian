@@ -47,26 +47,37 @@ class ReplyBot:
             if len(message) > 280:
                 message = self._truncate_message(message)
             
+            print(f"📤 Attempting to post reply...")
+            print(f"   Target Tweet ID: {reply_to_tweet_id}")
+            print(f"   Message Length: {len(message)} characters")
+            
             # Post the reply
             response = self.client.create_tweet(
                 text=message,
                 in_reply_to_tweet_id=reply_to_tweet_id
             )
             
-            if response.data:
-                logger.info(f"Successfully posted reply: {response.data['id']}")
+            if response and hasattr(response, 'data') and response.data:
+                tweet_id = response.data['id']
+                print(f"✅ REPLY POSTED SUCCESSFULLY!")
+                print(f"   New Tweet ID: {tweet_id}")
+                logger.info(f"Successfully posted reply: {tweet_id}")
                 return True
             else:
+                print(f"❌ Failed to post reply - no response data")
                 logger.error("Failed to post reply - no response data")
                 return False
                 
         except tweepy.TooManyRequests:
+            print(f"⏳ Rate limit exceeded when posting reply")
             logger.warning("Rate limit exceeded when posting reply")
             return False
         except tweepy.Forbidden as e:
+            print(f"🚫 Forbidden to post reply: {str(e)}")
             logger.error(f"Forbidden to post reply: {str(e)}")
             return False
         except Exception as e:
+            print(f"❌ Error posting reply: {str(e)}")
             logger.error(f"Error posting reply: {str(e)}")
             return False
     

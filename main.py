@@ -55,38 +55,59 @@ class RugGuardBot:
     def process_trigger(self, trigger_data):
         """Process a detected trigger phrase"""
         try:
-            logger.info(f"Processing trigger for user: {trigger_data['original_author_id']}")
+            print(f"\n🔔 TRIGGER DETECTED!")
+            print(f"   Reply Tweet ID: {trigger_data['reply_tweet_id']}")
+            print(f"   Analyzing User: @{trigger_data['original_author_username']} (ID: {trigger_data['original_author_id']})")
+            print(f"   Trigger Text: {trigger_data['trigger_text'][:50]}...")
+            
+            logger.info(f"🔍 Starting analysis for @{trigger_data['original_author_username']}")
             
             # Get user analysis
             analysis = self.analyzer.analyze_user(trigger_data['original_author_id'])
             if not analysis:
+                print(f"❌ ANALYSIS FAILED for user {trigger_data['original_author_id']}")
                 logger.error(f"Failed to analyze user {trigger_data['original_author_id']}")
                 return False
+            
+            print(f"✅ User analysis completed")
+            print(f"   Account Age: {analysis.get('account_age_days', 0)} days")
+            print(f"   Followers: {analysis.get('followers_count', 0)}")
+            print(f"   Following: {analysis.get('following_count', 0)}")
             
             # Check trust list
             trust_score = self.trust_checker.check_trust_list(trigger_data['original_author_username'])
             analysis['trust_list_score'] = trust_score
+            print(f"   Trust List Score: {trust_score}/100")
             
             # Calculate final trust score
             final_score = self._calculate_final_score(analysis)
+            print(f"🎯 FINAL TRUST SCORE: {final_score:.1f}/100")
             
             # Generate response
             response = self._generate_response(analysis, final_score)
+            print(f"📝 Response generated ({len(response)} characters)")
             
             # Post reply
+            print(f"📤 Posting reply...")
             success = self.reply_bot.post_reply(
                 trigger_data['reply_tweet_id'],
                 response
             )
             
             if success:
-                logger.info(f"Successfully processed trigger for user {trigger_data['original_author_id']}")
+                print(f"✅ REPLY POSTED SUCCESSFULLY!")
+                print(f"   Replied to tweet: {trigger_data['reply_tweet_id']}")
+                print(f"   Analysis for: @{trigger_data['original_author_username']}")
+                logger.info(f"✅ Successfully processed trigger for @{trigger_data['original_author_username']}")
             else:
+                print(f"❌ FAILED TO POST REPLY")
                 logger.error(f"Failed to post reply for user {trigger_data['original_author_id']}")
             
+            print("─" * 60)
             return success
             
         except Exception as e:
+            print(f"❌ ERROR processing trigger: {str(e)}")
             logger.error(f"Error processing trigger: {str(e)}")
             return False
     
@@ -138,25 +159,42 @@ Status: {trust_level}
     
     def run(self):
         """Main bot loop"""
+        print("\n🚀 RUGGUARD BOT STARTED")
+        print("━" * 60)
+        print("🔍 Monitoring Twitter for 'riddle me this' triggers...")
+        print("🎯 Ready to analyze Solana ecosystem users")
+        print("📊 Trust list loaded with verified users")
+        print("━" * 60)
         logger.info("Starting RugGuard Bot...")
         
         try:
+            check_count = 0
             while True:
+                check_count += 1
+                print(f"\n🔄 Check #{check_count} - Scanning for triggers...")
+                
                 # Listen for triggers
                 triggers = self.trigger_listener.check_for_triggers()
                 
-                # Process each trigger
-                for trigger in triggers:
-                    self.process_trigger(trigger)
-                    # Small delay between processing triggers
-                    time.sleep(2)
+                if triggers:
+                    print(f"🎯 Found {len(triggers)} trigger(s)!")
+                    # Process each trigger
+                    for trigger in triggers:
+                        self.process_trigger(trigger)
+                        # Small delay between processing triggers
+                        time.sleep(2)
+                else:
+                    print("⏳ No triggers found, continuing to monitor...")
                 
                 # Wait before next check (respecting rate limits)
+                print(f"💤 Waiting 60 seconds before next scan...")
                 time.sleep(60)  # Check every minute
                 
         except KeyboardInterrupt:
+            print("\n🛑 Bot stopped by user")
             logger.info("Bot stopped by user")
         except Exception as e:
+            print(f"\n💥 Bot crashed: {str(e)}")
             logger.error(f"Bot crashed: {str(e)}")
             raise
 
