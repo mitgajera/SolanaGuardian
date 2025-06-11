@@ -17,7 +17,7 @@ class TriggerListener:
         """Initialize the trigger listener with Twitter API client"""
         self.config = config
         self.trigger_phrase = "riddle me this"
-        self.last_check_time = datetime.utcnow() - timedelta(minutes=5)
+        self.last_check_time = datetime.utcnow() - timedelta(minutes=1)
         
         # Initialize Twitter API client
         try:
@@ -44,8 +44,8 @@ class TriggerListener:
             # Search for recent tweets containing the trigger phrase
             current_time = datetime.utcnow()
             
-            # Build search query
-            query = f'"{self.trigger_phrase}" -is:retweet'
+            # Build search query - focus on replies only
+            query = f'"{self.trigger_phrase}" -is:retweet is:reply'
             
             # If monitoring specific account, add it to query
             if self.config.MONITOR_SPECIFIC_ACCOUNT:
@@ -76,6 +76,10 @@ class TriggerListener:
                     # Check if it's a reply and contains exact trigger phrase
                     if (hasattr(tweet, 'in_reply_to_user_id') and tweet.in_reply_to_user_id and 
                         self.trigger_phrase.lower() in tweet.text.lower()):
+                        
+                        print(f"🔍 Processing reply tweet: {tweet.id}")
+                        print(f"   Reply text: {tweet.text[:100]}...")
+                        print(f"   In reply to user ID: {tweet.in_reply_to_user_id}")
                         
                         # Get original tweet author info
                         original_author_id = tweet.in_reply_to_user_id
