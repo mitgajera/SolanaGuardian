@@ -13,19 +13,11 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Fast RugGuard Scanner"
+args = "Instant Analyzer"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Instant Analyzer"
-
-[[workflows.workflow]]
-name = "Fast RugGuard Scanner"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python3 fast_rugguard.py"
+args = "Complete RugGuard Bot"
 
 [[workflows.workflow]]
 name = "Instant Analyzer"
@@ -35,6 +27,14 @@ author = "agent"
 task = "shell.exec"
 args = "python3 instant_analyzer.py"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Complete RugGuard Bot"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 complete_rugguard.py"
 
 [deployment]
 run = ["sh", "-c", "pip install tweepy python-dotenv requests && python main.py"]
