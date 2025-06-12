@@ -23,6 +23,10 @@ args = "Optimized RugGuard"
 task = "workflow.run"
 args = "Production RugGuard"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "RugGuard Webhook Server"
+
 [[workflows.workflow]]
 name = "twitter_bot_test"
 author = "agent"
@@ -47,5 +51,18 @@ author = "agent"
 task = "shell.exec"
 args = "python3 production_bot.py"
 
+[[workflows.workflow]]
+name = "RugGuard Webhook Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 webhook_server.py"
+waitForPort = 5000
+
 [deployment]
 run = ["sh", "-c", "pip install tweepy python-dotenv requests && python main.py"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80

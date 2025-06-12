@@ -29,7 +29,7 @@ class ProductionRugGuardBot:
     def __init__(self):
         self.config = Config()
         self.last_check = datetime.utcnow() - timedelta(hours=1)
-        self.scan_interval = 20 * 60  # 20 minutes to stay within rate limits
+        self.scan_interval = 30 * 60  # 30 minutes to stay within rate limits
         
         # Initialize Twitter client
         self.client = tweepy.Client(
