@@ -4,6 +4,37 @@ modules = ["python-3.11"]
 channel = "stable-24_05"
 
 [workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Fast RugGuard Scanner"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Instant Analyzer"
+
+[[workflows.workflow]]
+name = "Fast RugGuard Scanner"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 fast_rugguard.py"
+
+[[workflows.workflow]]
+name = "Instant Analyzer"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 instant_analyzer.py"
+waitForPort = 5000
 
 [deployment]
 run = ["sh", "-c", "pip install tweepy python-dotenv requests && python main.py"]
