@@ -25,7 +25,7 @@ class Config:
         self.MONITOR_USERNAME = os.getenv('MONITOR_USERNAME', 'projectrugguard')
         
         # Rate Limiting
-        self.CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '180'))  # seconds - increased to avoid rate limits
+        self.CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '900'))  # seconds - increased to avoid rate limits
         self.MAX_REQUESTS_PER_HOUR = int(os.getenv('MAX_REQUESTS_PER_HOUR', '50'))
         
         # Trust List Configuration

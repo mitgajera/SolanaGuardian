@@ -103,7 +103,10 @@ class TrustworthinessAnalyzer:
                 id=user_id,
                 user_fields=['created_at', 'description', 'public_metrics', 'verified']
             )
-            return user.data
+            return user.data if user and hasattr(user, 'data') else None
+        except tweepy.TooManyRequests:
+            logger.warning(f"Rate limit hit while getting user info for {user_id}")
+            return None
         except Exception as e:
             logger.error(f"Error getting user info for {user_id}: {str(e)}")
             return None
@@ -118,6 +121,9 @@ class TrustworthinessAnalyzer:
                 exclude=['retweets', 'replies']
             )
             return tweets.data if tweets.data else []
+        except tweepy.TooManyRequests:
+            logger.warning(f"Rate limit hit while getting tweets for {user_id}")
+            return []
         except Exception as e:
             logger.error(f"Error getting recent tweets for {user_id}: {str(e)}")
             return []
