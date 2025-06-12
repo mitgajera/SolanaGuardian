@@ -43,6 +43,15 @@ KNOWN_ACCOUNTS = {
         'bio_content': 'Crypto enthusiast | NFT collector | DeFi explorer',
         'trust_score': 90,
         'trust_level': 'HIGH TRUST'
+    },
+    'cryptoemperor06': {
+        'user_id': '1491826285911412737',
+        'account_age_days': 1218,
+        'followers': 850,
+        'following': 1200,
+        'bio_content': 'Crypto trader | DeFi enthusiast | Building wealth in digital assets',
+        'trust_score': 82,
+        'trust_level': 'HIGH TRUST'
     }
 }
 
