@@ -1,53 +1,23 @@
 # RugGuard Twitter Bot
 
-A Twitter bot that monitors for trigger phrases and performs automated trustworthiness analysis on users in the Solana ecosystem.
+A comprehensive Twitter bot that monitors for "riddle me this" triggers and performs automated trustworthiness analysis on users in the Solana ecosystem.
 
 ## Features
 
-- **Trigger Detection**: Monitors Twitter replies for the exact phrase "riddle me this"
-- **User Analysis**: Performs comprehensive trustworthiness analysis including:
-  - Account age evaluation
-  - Follower/following ratio analysis
-  - Bio content quality assessment
-  - Engagement metrics calculation
-  - Recent tweet content analysis
-  - Trust list verification against public GitHub repository
-- **Automated Responses**: Posts detailed trust score summaries as replies
-- **Rate Limit Handling**: Respects Twitter API rate limits
-- **Modular Architecture**: Clean, maintainable codebase with separate modules
+- **Automatic Trigger Detection**: Monitors Twitter for "riddle me this" phrases in replies
+- **Comprehensive Analysis**: Evaluates account age, follower ratios, bio quality, activity levels, and community standing
+- **Trust List Integration**: Cross-references with verified Solana ecosystem accounts
+- **Multiple Detection Methods**: Direct API monitoring and webhook-based instant processing
+- **Rate Limit Optimized**: Works within Twitter API v2 constraints with intelligent scanning intervals
 
-## Architecture
+## Quick Start
 
-The bot consists of several modular components:
+### Environment Setup
+```bash
+# Copy environment template
+cp .env.example .env
 
-- `main.py` - Main orchestrator and entry point
-- `trigger_listener.py` - Monitors Twitter for trigger phrases
-- `analyzer.py` - Performs comprehensive user trustworthiness analysis
-- `trust_check.py` - Checks users against the public trust list
-- `reply_bot.py` - Posts automated replies with analysis results
-- `config.py` - Configuration management
-- `utils.py` - Utility functions and helpers
-
-## Setup Instructions
-
-### 1. Twitter API Setup
-
-1. Create a Twitter Developer account at https://developer.twitter.com/
-2. Create a new Twitter app and generate API keys
-3. Ensure your app has read and write permissions
-4. Note down the following credentials:
-   - API Key
-   - API Secret Key
-   - Access Token
-   - Access Token Secret
-   - Bearer Token
-
-### 2. Environment Configuration
-
-1. Copy `.env.example` to `.env`
-2. Fill in your Twitter API credentials:
-
-```env
+# Add your Twitter API credentials to .env
 TWITTER_API_KEY=your_api_key
 TWITTER_API_SECRET=your_api_secret
 TWITTER_ACCESS_TOKEN=your_access_token
@@ -55,104 +25,151 @@ TWITTER_ACCESS_TOKEN_SECRET=your_access_token_secret
 TWITTER_BEARER_TOKEN=your_bearer_token
 ```
 
-### 3. Installation and Running
+### Running the Bot
 
-1. Install required dependencies:
+#### Option 1: Production Bot (30-minute scans)
 ```bash
-pip install tweepy python-dotenv requests
+python3 production_bot.py
 ```
 
-2. Run the bot:
+#### Option 2: Webhook Server (Instant processing)
 ```bash
-python main.py
+python3 webhook_server.py
 ```
 
-The bot will start monitoring Twitter for the trigger phrase "riddle me this" and automatically analyze users when detected.
+#### Option 3: Manual Analysis
+```bash
+python3 immediate_analysis.py
+```
 
-## How It Works
+## Usage
 
-1. **Trigger Detection**: The bot continuously monitors Twitter replies for the exact phrase "riddle me this"
-2. **User Identification**: When found, it extracts the original tweet author's information
-3. **Trustworthiness Analysis**: Performs comprehensive analysis including:
-   - Account age (newer accounts score lower)
-   - Follower-to-following ratio (better ratios score higher)
-   - Bio quality (length and keyword analysis)
-   - Engagement metrics (likes, retweets, replies relative to followers)
-   - Content analysis (Solana relevance, suspicious patterns)
-   - Trust list verification (checks against GitHub trust list)
-4. **Response Generation**: Posts a detailed trust score summary as a reply
+### Trigger Detection
+Post a reply containing "riddle me this" to any tweet, and the bot will analyze the original tweet author's trustworthiness.
 
-## Trust Scoring
+Example:
+```
+@username riddle me this
+```
 
-The bot calculates a final trust score (0-100) based on weighted factors:
-- Account age: 15%
-- Follower ratio: 20%
-- Bio quality: 10%
-- Engagement: 25%
-- Content quality: 20%
-- Trust list connections: 10%
+### Webhook API
 
-## Configuration Options
+#### Manual Analysis Endpoint
+```bash
+curl -X POST http://localhost:5000/manual \
+  -H "Content-Type: application/json" \
+  -d '{"username": "target_username"}'
+```
 
-You can customize the bot's behavior by modifying these environment variables:
+#### Trigger Processing Endpoint
+```bash
+curl -X POST http://localhost:5000/trigger \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tweet_id": "1234567890",
+    "target_username": "username_to_analyze",
+    "trigger_text": "riddle me this"
+  }'
+```
 
-- `MONITOR_SPECIFIC_ACCOUNT`: Set to `true` to only monitor replies to a specific account
-- `MONITOR_USERNAME`: Username to monitor (default: projectrugguard)
-- `CHECK_INTERVAL`: How often to check for triggers in seconds (default: 60)
-- `MAX_RECENT_TWEETS`: Number of recent tweets to analyze (default: 20)
+## Analysis Metrics
 
-## Deployment on Replit
+The bot evaluates users based on:
 
-This bot is designed to run seamlessly on Replit:
+- **Account Age** (0-25 points): Older accounts score higher
+- **Follower Ratio** (0-20 points): Balanced follower/following ratios preferred
+- **Bio Quality** (0-15 points): Professional content vs suspicious keywords
+- **Activity Level** (0-20 points): Optimal posting frequency (1-5 tweets/day)
+- **Trust List Status** (0-20 points): Verified Solana ecosystem members
 
-1. Fork this repository to your Replit account
-2. Add your Twitter API credentials to Replit Secrets
-3. Run the project - it will automatically install dependencies and start monitoring
+### Trust Score Ranges
 
-## Rate Limiting
+- **80-100**: HIGH TRUST - Strong reputation indicators
+- **60-79**: MODERATE TRUST - Generally positive signals
+- **40-59**: CAUTIOUS - Exercise standard caution
+- **0-39**: HIGH RISK - Significant concerns identified
 
-The bot includes built-in rate limiting to respect Twitter API limits:
-- Automatic backoff when rate limits are hit
-- Configurable request frequency
-- Graceful error handling
+## Architecture
 
-## Trust List Integration
+### Core Components
 
-The bot automatically fetches and updates the trust list from:
-https://github.com/devsyrem/turst-list/blob/main/list
+- `main.py`: Original bot with Twitter API monitoring
+- `production_bot.py`: Optimized version with 30-minute scan intervals
+- `webhook_server.py`: Flask server for instant trigger processing
+- `analyzer.py`: Comprehensive trustworthiness analysis engine
+- `trust_check.py`: Trust list verification system
+- `trigger_listener.py`: Twitter API monitoring for triggers
+- `reply_bot.py`: Automated response posting system
 
-Users with connections to trusted accounts receive higher trust scores.
+### Configuration
+
+- `config.py`: Environment variable management
+- `utils.py`: Utility functions and rate limiting
+- `.env.example`: Environment template
+
+## API Rate Limits
+
+The bot is optimized for Twitter API v2 Essential access:
+
+- **Search Tweets**: 450 requests per 15 minutes
+- **User Lookup**: 300 requests per 15 minutes
+- **Tweet Posting**: 300 requests per 15 minutes
+
+Scan intervals are automatically adjusted to stay within these limits.
+
+## Deployment
+
+The bot is designed for deployment on Replit with the following workflows:
+
+1. **Production RugGuard**: Main scanning bot
+2. **RugGuard Webhook Server**: Instant processing server
+3. **Optimized RugGuard**: Enhanced monitoring system
+
+## Trust List
+
+The bot integrates with a curated trust list of verified Solana ecosystem accounts including:
+
+- Core Solana team members
+- Verified project founders
+- Established community leaders
+- Audited protocol developers
+
+## Security Features
+
+- **Rate Limiting**: Prevents API abuse
+- **Input Validation**: Sanitizes all user inputs
+- **Error Handling**: Graceful failure management
+- **Logging**: Comprehensive activity tracking
 
 ## Example Output
 
-When the bot detects a trigger, it posts a reply like:
-
 ```
-RugGuard Analysis Complete 🛡️
+🛡️ RUGGUARD ANALYSIS: @username
 
-Trust Score: 72.5/100
-Status: 🟡 MODERATELY TRUSTED
+✅ TRUST SCORE: 85/100 - HIGH TRUST
 
-📊 Breakdown:
-• Account Age: 487 days
-• Followers: 1,234 | Following: 567
-• Bio Quality: ✓
-• Avg Engagement: 15.3
-• Trust List: ✗
+📊 BREAKDOWN:
+• Account Age: Excellent (1200 days)
+• Follower Ratio: Good (2.1:1)
+• Bio Quality: Good
+• Activity: Optimal
+• Community: Good Standing
 
-⚠️ Always DYOR before any transactions!
+💡 Strong reputation indicators
+
+⚠️ Always DYOR before transactions!
 #RugGuard #SolanaEcosystem
 ```
 
-## Contributing
+## Support
 
-This project follows a modular architecture for easy maintenance and extension. Each component has a specific responsibility:
+For issues or questions:
 
-- Add new analysis metrics in `analyzer.py`
-- Modify trigger detection logic in `trigger_listener.py`
-- Update response formatting in `reply_bot.py`
-- Extend trust list functionality in `trust_check.py`
+1. Check the logs: `rugguard_bot.log`, `production_bot.log`, `webhook_server.log`
+2. Verify Twitter API credentials
+3. Ensure proper environment variable configuration
+4. Monitor rate limit compliance
 
 ## License
 
-This project is open source and available under the MIT License.
+MIT License - See LICENSE file for details.
