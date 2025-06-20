@@ -169,7 +169,3 @@ For issues or questions:
 2. Verify Twitter API credentials
 3. Ensure proper environment variable configuration
 4. Monitor rate limit compliance
-
-## License
-
-MIT License - See LICENSE file for details.
